@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - tasks: {alias: "unitTests", name: "check"}
+          os: windows-latest
+          arch: arm64
+          runner: windows-11-arm
+          expander_leg: windows-latest--arm64
+    name: ${{ matrix.tasks.alias }} [${{ matrix.expander_leg }}]
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+    - name: Set up JDK
+      uses: ./.github/actions/setup-java
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+    - name: Build with Gradle
+      run: ./gradlew assemble
+    - name: Run task with Gradle
+      run: ./gradlew ${{ matrix.tasks.name }}
+    - name: Archive task results
+      uses: actions/upload-artifact@v6
+      if: success() || failure()
+      with:
+        name: ${{ matrix.tasks.name }}-test-report
+        path: '**/build/test-results/**/TEST-*.xml'
+        retention-days: 90
+    - name: Generate test summary
+      uses: test-summary/action@v2
+      if: success() || failure()
+      with:
+        paths: '**/build/test-results/**/TEST-*.xml'
+        show: fail, skip
+    - name: Upload artifact
+      if: always() && github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ matrix.tasks.alias }}
+        path: build/allure-results
+
+    timeout-minutes: 150
