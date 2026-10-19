@@ -1,0 +1,11 @@
+name: 'Setup java'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up JDK 25
+      uses: actions/setup-java@v5
+      with:
+        java-version: 25
+        # Temurin has no JDK 25 build for Windows on ARM64; use the Microsoft Build of OpenJDK there
+        distribution: ${{ (runner.os == 'Windows' && runner.arch == 'ARM64') && 'microsoft' || 'temurin' }}

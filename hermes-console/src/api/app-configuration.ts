@@ -1,0 +1,151 @@
+export interface AppConfiguration {
+  console: ConsoleConfiguration;
+  dashboard: DashboardConfiguration;
+  metrics: MetricsConfiguration;
+  auth: AuthConfiguration;
+  owner: OwnerConfiguration;
+  topic: TopicViewConfiguration;
+  subscription: SubscriptionViewConfiguration;
+  consistency: ConsistencyViewConfiguration;
+  group: GroupViewConfiguration;
+  costs: CostsConfiguration;
+}
+
+export interface ConsoleConfiguration {
+  title: string;
+  contactLink: string;
+  environmentName: string;
+  criticalEnvironment: boolean;
+  knownEnvironments: ConsoleEnvironment[];
+}
+
+export interface ConsoleEnvironment {
+  name: string;
+  url: string;
+}
+
+export interface DashboardConfiguration {
+  metrics: string;
+  docs: string;
+}
+
+export interface MetricsConfiguration {
+  fetchingDashboardUrlEnabled: boolean;
+}
+
+export interface AuthConfiguration {
+  oauth: OAuthConfiguration;
+}
+
+export interface OAuthConfiguration {
+  enabled: boolean;
+  url: string;
+  authorizationEndpoint: string;
+  tokenEndpoint: string;
+  clientId: string;
+  scope: string;
+}
+
+export interface OwnerConfiguration {
+  sources: OwnerSourceConfiguration[];
+}
+
+export interface OwnerSourceConfiguration {
+  name: string;
+  placeholder: string;
+}
+
+export interface TopicViewConfiguration {
+  messagePreviewEnabled: boolean;
+  offlineClientsEnabled: boolean;
+  schemaRegistryUrl: string;
+  defaults: DefaultTopicViewConfiguration;
+  contentTypes: TopicContentType[];
+  readOnlyModeEnabled: boolean;
+  retentionUnits: RetentionUnit[];
+  offlineRetransmission: OfflineRetransmission;
+}
+
+export interface DefaultTopicViewConfiguration {
+  ack: string;
+  contentType: string;
+  retentionTime: RetentionTimeConfiguration;
+  offlineStorage: DefaultOfflineStorageViewConfiguration;
+}
+
+export interface DefaultOfflineStorageViewConfiguration {
+  enabled: boolean;
+  retentionTime: RetentionTimeConfiguration;
+}
+
+export interface RetentionTimeConfiguration {
+  duration: number;
+  retentionUnit: string;
+}
+
+export interface RetentionUnit {
+  value: string;
+  label: string;
+}
+
+export interface TopicContentType {
+  value: string;
+  label: string;
+}
+
+export interface SubscriptionViewConfiguration {
+  endpointAddressResolverMetadata: Record<
+    string,
+    EndpointAddressResolverMetadataConfiguration
+  >;
+  requestTimeoutWarningThreshold: number;
+  defaults: DefaultSubscriptionViewConfiguration;
+  deliveryTypes: SubscriptionDeliveryType[];
+}
+
+export interface EndpointAddressResolverMetadataConfiguration {
+  title: string;
+  type: string;
+  hint: string;
+  options?: any;
+}
+
+export interface DefaultSubscriptionViewConfiguration {
+  subscriptionPolicy: SubscriptionPolicyConfiguration;
+  deliveryType: string;
+}
+
+export interface SubscriptionPolicyConfiguration {
+  messageTtl: number;
+  requestTimeout: number;
+}
+
+export interface SubscriptionDeliveryType {
+  value: string;
+  label: string;
+}
+
+export interface ConsistencyViewConfiguration {
+  maxGroupBatchSize: number;
+}
+
+export interface GroupViewConfiguration {
+  nonAdminCreationEnabled: boolean;
+}
+
+export interface CostsConfiguration {
+  enabled: boolean;
+  globalDetailsUrl: string;
+  topicIframeUrl: string;
+  topicDetailsUrl: string;
+  subscriptionIframeUrl: string;
+  subscriptionDetailsUrl: string;
+}
+
+export interface OfflineRetransmission {
+  enabled: boolean;
+  description: string;
+  fromViewDocsUrl: string;
+  globalTaskQueueUrl: string;
+  monitoringDocsUrl: string;
+}

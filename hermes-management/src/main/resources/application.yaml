@@ -1,0 +1,67 @@
+spring:
+  jersey:
+    type: filter
+  profiles:
+    default: local
+
+management:
+  backend:
+    port: 8090
+  zookeeper:
+    clusters:
+      - datacenter: dc
+        root: /run/hermes
+        connectionString: localhost:2181
+  kafka:
+    clusters:
+      - datacenter: dc
+        clusterName: primary-dc
+        connectionTimeout: 3000
+        brokerList: localhost:9092
+  endpoints:
+    web:
+      base-path: /status
+      exposure:
+        include: health, prometheus
+  health:
+    enabled: true
+  leadership:
+    zookeeper-dc: dc
+  audit:
+    isLoggingAuditEnabled: false
+    isEventAuditEnabled: false
+    eventUrl: null
+  cache:
+    topicOwnerRefreshRateInSeconds: 300 # 5 minutes
+    subscriptionOwnerRefreshRateInSeconds: 300
+  console:
+    topic:
+      retentionUnits:
+        - value: TimeUnit.HOURS
+          label: Hours
+        - value: TimeUnit.DAYS
+          label: Days
+      defaults:
+        offlineStorage:
+          retentionTime:
+            duration: 60
+  detection:
+    inactive-topics:
+      enabled: false
+      inactivity-threshold: 60d
+      next-notification-threshold: 14d
+      whitelisted-qualified-topic-names: [ ]
+      cron: "0 0 8 * * *"
+      notifications-history-limit: 5
+  consumer-group:
+    clean-up:
+      enabled: true
+  consistency:
+    kafka:
+      enabled: false
+      periodicCheckEnabled: false
+      initialRefreshDelay: 2m
+      refreshInterval: 24h
+      threadPoolSize: 4
+      syncBatchSize: 100
+      bootstrapStrictPartitions: true

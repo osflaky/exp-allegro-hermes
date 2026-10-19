@@ -1,0 +1,120 @@
+# Metrics
+
+Hermes gathers a big number of different metrics which are useful when trying to observe the current state of the system.
+
+Latencies are measured as: 50, 99 and 99.9 percentiles.
+Rates are measured and averaged in a time window. There are 3 time windows measured: 1, 5 and 15 minutes.
+
+## Frontend
+
+Frontend metrics are all prefixed with `producer.{hostname}`. Most of the metrics are collected in both aggregated and
+per-topic scope.
+
+### Latency
+
+Latency metrics are grouped into two categories:
+
+* ACK-leader acknowledgment level
+* ACK-all acknowledgment level
+
+In those categories it is possible to read both **broker latency** and **Hermes latency**. Broker latency measures
+Kafka response times, while Hermes latency measures time span between receiving message till sending the response.
+
+Metrics:
+
+* `ack-all.broker-latency`
+* `ack-all.latency`
+* `ack-all.latency.{groupName}.{topicName}`
+* `ack-leader.broker-latency`
+* `ack-leader.latency`
+* `ack-leader.latency.{groupName}.{topicName}`
+
+### Rate
+
+Metrics:
+
+* `meter`
+* `meter.{groupName}.{topicName}`
+
+### Response codes
+
+These metrics measure global Hermes response codes. They make for good monitoring metrics, as sudden increase of **202**
+or **500** status codes might signal an emergency. There are no per-topic metrics for response codes. See
+[publishing guide](../user/publishing.md#response-codes) for the meaning of response codes.
+
+Metrics:
+
+* `http-status-codes.code201`
+* `http-status-codes.code202`
+* `http-status-codes.code408`
+* `http-status-codes.code500`
+
+### Message
+
+There are three metrics related to messages:
+
+* **parsing time** which indicates how much time it took to receive the message
+* **message size** in bytes
+* **validation latency** which indicates how long did it took to validate message schema (if enabled)
+
+Metrics:
+
+* `message-size`
+* `message-size.{groupName}.{topicName}`
+* `validation-latency`
+* `validation-latency.{groupName}.{topicName}`
+
+### Compression
+
+When using Kafka compression algorithm, these metrics show average compression rate of messages:
+
+* `ack-all.compression-rate`
+* `ack-leader.compression-rate`
+
+## Consumers
+
+Consumers metrics are all prefixed with `consumer.{hostname}`. Most of the metrics are collected in both aggregated and
+per-subscription scope.
+
+### Subscription metrics
+
+Hermes publishes a lot of metrics that can be useful when reasoning about subscribers health and debugging subscribers
+issues:
+
+* **latency** as measured by Hermes: from the start of sending the message till receiving response; path: `latency`
+* **output rate**: effective output rate; path: `meter`
+* **maximum output rate**: current maximum output rate as calculated by [Consumers rate limiter](../configuration/rate-limiting.md); path: `output-rate`
+* **response statuses**: rate of different response statuses sent by client (2xx, 4xx, 5xx, timeouts and other failures); path: `status`
+* **message processing time**: end-to-end processing time from publish to successful delivery, exposed as a histogram;
+  path `message_processing_time`
+
+#### Message processing time
+
+It measures time between event **publication** to a topic and **successful delivery** (HTTP 2xx) to the subscriber and
+includes Hermes retries, backoffs, configured sending delays, lag and rate limiting. Only successfully delivered events
+are counted; discarded or permanently failed messages are not part of this distribution.
+
+This metric is configured per subscription via `metricsConfig.messageProcessing` (
+see [subscribing guide](../user/subscribing.md#message-processing-time-metric)).
+Once enabled, you can use it to compute:
+
+* percentage of events processed under a chosen threshold (e.g. "99.9% of events processed within 60 seconds"),
+* high quantiles such as p99 of processing time,
+* the overall distribution of processing time per subscription.
+
+Be aware of the following limitations when interpreting this metric:
+
+* **Retransmissions** – retransmitted events are included and often have very long processing times, which can
+  dominate high quantiles if you retransmit a lot of historical traffic.
+* **Duplicates** – in rare cases, the same event can be processed and measured multiple times (e.g. after consumer
+  restart or
+  Kafka rebalance). In such cases, each successful delivery is included in the histogram.
+
+Currently, this metric is available only for **serial** (non-batch) subscriptions.
+
+### Tracker
+
+With tracing enabled, it is possible to observe the tracer queue size and remaining capacity:
+
+* `tracker.elasticsearch.queue-size`
+* `tracker.elasticsearch.remaining-capacity`

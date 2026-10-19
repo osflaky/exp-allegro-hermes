@@ -1,0 +1,839 @@
+package pl.allegro.tech.hermes.management.config.console;
+
+import com.google.common.collect.Lists;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+/**
+ * This class could have a much better structure, however it has this one due to compatibility with
+ * old JSON config file format.
+ */
+@ConfigurationProperties(prefix = "management.console")
+public class ConsoleProperties {
+  private Console console = new Console();
+  private Dashboard dashboard = new Dashboard();
+  private Metrics metrics = new Metrics();
+  private Auth auth = new Auth();
+  private Owner owner = new Owner();
+  private TopicView topic = new TopicView();
+  private SubscriptionView subscription = new SubscriptionView();
+  private ConsistencyView consistency = new ConsistencyView();
+  private GroupView group = new GroupView();
+  private Costs costs = new Costs();
+
+  public Dashboard getDashboard() {
+    return dashboard;
+  }
+
+  public void setDashboard(Dashboard dashboard) {
+    this.dashboard = dashboard;
+  }
+
+  public Metrics getMetrics() {
+    return metrics;
+  }
+
+  public void setMetrics(Metrics metrics) {
+    this.metrics = metrics;
+  }
+
+  public Auth getAuth() {
+    return auth;
+  }
+
+  public void setAuth(Auth auth) {
+    this.auth = auth;
+  }
+
+  public Console getConsole() {
+    return console;
+  }
+
+  public void setConsole(Console console) {
+    this.console = console;
+  }
+
+  public ConsistencyView getConsistency() {
+    return consistency;
+  }
+
+  public void setConsistency(ConsistencyView consistency) {
+    this.consistency = consistency;
+  }
+
+  public GroupView getGroup() {
+    return group;
+  }
+
+  public void setGroup(GroupView group) {
+    this.group = group;
+  }
+
+  public Costs getCosts() {
+    return costs;
+  }
+
+  public void setCosts(Costs costs) {
+    this.costs = costs;
+  }
+
+  public static final class Console {
+    private String title = "hermes console";
+    private String contactLink = "";
+    private String environmentName = "LOCAL";
+
+    private boolean criticalEnvironment = false;
+
+    private List<ConsoleEnvironment> knownEnvironments = Collections.emptyList();
+
+    public String getTitle() {
+      return title;
+    }
+
+    public void setTitle(String title) {
+      this.title = title;
+    }
+
+    public String getContactLink() {
+      return contactLink;
+    }
+
+    public void setContactLink(String contactLink) {
+      this.contactLink = contactLink;
+    }
+
+    public boolean isCriticalEnvironment() {
+      return criticalEnvironment;
+    }
+
+    public void setCriticalEnvironment(boolean isCriticalEnvironment) {
+      this.criticalEnvironment = isCriticalEnvironment;
+    }
+
+    public String getEnvironmentName() {
+      return environmentName;
+    }
+
+    public void setEnvironmentName(String environmentName) {
+      this.environmentName = environmentName;
+    }
+
+    public List<ConsoleEnvironment> getKnownEnvironments() {
+      return knownEnvironments;
+    }
+
+    public void setKnownEnvironments(List<ConsoleEnvironment> knownEnvironments) {
+      this.knownEnvironments = knownEnvironments;
+    }
+  }
+
+  public static final class ConsoleEnvironment {
+    private String name;
+    private String url;
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public String getUrl() {
+      return url;
+    }
+
+    public void setUrl(String url) {
+      this.url = url;
+    }
+  }
+
+  public Owner getOwner() {
+    return owner;
+  }
+
+  public void setOwner(Owner owner) {
+    this.owner = owner;
+  }
+
+  public TopicView getTopic() {
+    return topic;
+  }
+
+  public void setTopic(TopicView topic) {
+    this.topic = topic;
+  }
+
+  public SubscriptionView getSubscription() {
+    return subscription;
+  }
+
+  public void setSubscription(SubscriptionView subscription) {
+    this.subscription = subscription;
+  }
+
+  public static final class Dashboard {
+    private String metrics = "http://localhost:8082";
+    private String docs = "http://hermes-pubsub.rtfd.org";
+
+    public String getMetrics() {
+      return metrics;
+    }
+
+    public void setMetrics(String metrics) {
+      this.metrics = metrics;
+    }
+
+    public String getDocs() {
+      return docs;
+    }
+
+    public void setDocs(String docs) {
+      this.docs = docs;
+    }
+  }
+
+  public static final class Metrics {
+    private boolean fetchingDashboardUrlEnabled = false;
+
+    public boolean isFetchingDashboardUrlEnabled() {
+      return fetchingDashboardUrlEnabled;
+    }
+
+    public void setFetchingDashboardUrlEnabled(boolean fetchingDashboardUrlEnabled) {
+      this.fetchingDashboardUrlEnabled = fetchingDashboardUrlEnabled;
+    }
+  }
+
+  public static final class Auth {
+    private OAuth oauth = new OAuth();
+
+    public OAuth getOauth() {
+      return oauth;
+    }
+
+    public void setOauth(OAuth oauth) {
+      this.oauth = oauth;
+    }
+  }
+
+  public static final class OAuth {
+    private boolean enabled = false;
+    private String url = "localhost:8092";
+    private String authorizationEndpoint = "/auth/oauth/authorize";
+    private String tokenEndpoint = "/auth/oauth/token";
+    private String clientId = "hermes";
+    private String scope = "hermes";
+
+    public boolean isEnabled() {
+      return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+    }
+
+    public String getUrl() {
+      return url;
+    }
+
+    public void setUrl(String url) {
+      this.url = url;
+    }
+
+    public String getAuthorizationEndpoint() {
+      return authorizationEndpoint;
+    }
+
+    public void setAuthorizationEndpoint(String authorizationEndpoint) {
+      this.authorizationEndpoint = authorizationEndpoint;
+    }
+
+    public String getTokenEndpoint() {
+      return tokenEndpoint;
+    }
+
+    public void setTokenEndpoint(String tokenEndpoint) {
+      this.tokenEndpoint = tokenEndpoint;
+    }
+
+    public String getClientId() {
+      return clientId;
+    }
+
+    public void setClientId(String clientId) {
+      this.clientId = clientId;
+    }
+
+    public String getScope() {
+      return scope;
+    }
+
+    public void setScope(String scope) {
+      this.scope = scope;
+    }
+  }
+
+  /**
+   * Topic view configuration for frontend console.
+   *
+   * <p><strong>Note:</strong> The {@code contentTypes} list is set at runtime from {@link
+   * pl.allegro.tech.hermes.management.config.TopicProperties#getAllowedContentTypes()}. Any attempt
+   * to configure {@code console.topic.contentTypes} in application.yaml will have no effect.
+   *
+   * <p>The source of truth for content types is: {@code topic.allowedContentTypes} in your
+   * application configuration.
+   *
+   * @see pl.allegro.tech.hermes.management.config.TopicProperties
+   * @see
+   *     pl.allegro.tech.hermes.management.config.console.ConsoleConfiguration#consoleConfigurationRepository
+   */
+  public static final class TopicView {
+    private boolean messagePreviewEnabled = true;
+    private boolean offlineClientsEnabled = false;
+    private String schemaRegistryUrl = "http://localhost:8081";
+    private DefaultTopicView defaults = new DefaultTopicView();
+    private List<TopicContentType> contentTypes =
+        Lists.newArrayList(
+            new TopicContentType("AVRO", "AVRO"), new TopicContentType("JSON", "JSON"));
+    private boolean readOnlyModeEnabled = false;
+    private List<RetentionUnit> retentionUnits =
+        Lists.newArrayList(new RetentionUnit("DAYS", "DAYS"));
+    private OfflineRetransmission offlineRetransmission = new OfflineRetransmission();
+
+    public boolean isMessagePreviewEnabled() {
+      return messagePreviewEnabled;
+    }
+
+    public void setMessagePreviewEnabled(boolean messagePreviewEnabled) {
+      this.messagePreviewEnabled = messagePreviewEnabled;
+    }
+
+    public boolean isOfflineClientsEnabled() {
+      return offlineClientsEnabled;
+    }
+
+    public void setOfflineClientsEnabled(boolean offlineClientsEnabled) {
+      this.offlineClientsEnabled = offlineClientsEnabled;
+    }
+
+    public String getSchemaRegistryUrl() {
+      return schemaRegistryUrl;
+    }
+
+    public void setSchemaRegistryUrl(String schemaRegistryUrl) {
+      this.schemaRegistryUrl = schemaRegistryUrl;
+    }
+
+    public DefaultTopicView getDefaults() {
+      return defaults;
+    }
+
+    public void setDefaults(DefaultTopicView defaults) {
+      this.defaults = defaults;
+    }
+
+    public List<TopicContentType> getContentTypes() {
+      return contentTypes;
+    }
+
+    // No public setter - value is set directly in ConsoleConfiguration from TopicProperties
+    void setContentTypes(List<TopicContentType> contentTypes) {
+      this.contentTypes = contentTypes;
+    }
+
+    public boolean isReadOnlyModeEnabled() {
+      return readOnlyModeEnabled;
+    }
+
+    public void setReadOnlyModeEnabled(boolean readOnlyModeEnabled) {
+      this.readOnlyModeEnabled = readOnlyModeEnabled;
+    }
+
+    public List<RetentionUnit> getRetentionUnits() {
+      return retentionUnits;
+    }
+
+    public void setRetentionUnits(List<RetentionUnit> retentionUnits) {
+      this.retentionUnits = retentionUnits;
+    }
+
+    public OfflineRetransmission getOfflineRetransmission() {
+      return offlineRetransmission;
+    }
+
+    public void setOfflineRetransmission(OfflineRetransmission offlineRetransmission) {
+      this.offlineRetransmission = offlineRetransmission;
+    }
+  }
+
+  public static final class DefaultTopicView {
+    private String ack = "LEADER";
+    private String contentType = "JSON";
+    private RetentionTime retentionTime = new RetentionTime();
+    private DefaultOfflineStorageView offlineStorage = new DefaultOfflineStorageView();
+
+    public String getAck() {
+      return ack;
+    }
+
+    public void setAck(String ack) {
+      this.ack = ack;
+    }
+
+    public String getContentType() {
+      return contentType;
+    }
+
+    public void setContentType(String contentType) {
+      this.contentType = contentType;
+    }
+
+    public RetentionTime getRetentionTime() {
+      return retentionTime;
+    }
+
+    public void setRetentionTime(RetentionTime retentionTime) {
+      this.retentionTime = retentionTime;
+    }
+
+    public DefaultOfflineStorageView getOfflineStorage() {
+      return offlineStorage;
+    }
+
+    public void setOfflineStorage(DefaultOfflineStorageView offlineStorage) {
+      this.offlineStorage = offlineStorage;
+    }
+  }
+
+  public static final class DefaultOfflineStorageView {
+    private boolean enabled = false;
+    private RetentionTime retentionTime = new RetentionTime();
+
+    public boolean isEnabled() {
+      return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+    }
+
+    public RetentionTime getRetentionTime() {
+      return retentionTime;
+    }
+
+    public void setRetentionTime(RetentionTime retentionTime) {
+      this.retentionTime = retentionTime;
+    }
+  }
+
+  public static final class RetentionTime {
+    private int duration = 1;
+    private TimeUnit retentionUnit = TimeUnit.DAYS;
+
+    public int getDuration() {
+      return duration;
+    }
+
+    public void setDuration(int duration) {
+      this.duration = duration;
+    }
+
+    public TimeUnit getRetentionUnit() {
+      return retentionUnit;
+    }
+
+    public void setRetentionUnit(TimeUnit retentionUnit) {
+      this.retentionUnit = retentionUnit;
+    }
+  }
+
+  public static final class TopicContentType {
+    private String value = "";
+    private String label = "";
+
+    public TopicContentType() {}
+
+    public TopicContentType(String value, String label) {
+      this.value = value;
+      this.label = label;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+
+    public String getLabel() {
+      return label;
+    }
+
+    public void setLabel(String label) {
+      this.label = label;
+    }
+  }
+
+  public static final class RetentionUnit {
+    private String value = "";
+    private String label = "";
+
+    public RetentionUnit() {}
+
+    public RetentionUnit(String value, String label) {
+      this.value = value;
+      this.label = label;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+
+    public String getLabel() {
+      return label;
+    }
+
+    public void setLabel(String label) {
+      this.label = label;
+    }
+  }
+
+  public static final class Owner {
+    private List<OwnerSource> sources =
+        Lists.newArrayList(new OwnerSource("Plaintext", "Name of the owner"));
+
+    public List<OwnerSource> getSources() {
+      return sources;
+    }
+
+    public void setSources(List<OwnerSource> sources) {
+      this.sources = sources;
+    }
+  }
+
+  public static final class OwnerSource {
+    private String name = "";
+    private String placeholder = "";
+
+    public OwnerSource() {}
+
+    public OwnerSource(String name, String placeholder) {
+      this.name = name;
+      this.placeholder = placeholder;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public String getPlaceholder() {
+      return placeholder;
+    }
+
+    public void setPlaceholder(String placeholder) {
+      this.placeholder = placeholder;
+    }
+  }
+
+  public static final class SubscriptionView {
+    private Map<String, EndpointAddressResolverMetadata> endpointAddressResolverMetadata =
+        new HashMap<>();
+    private int requestTimeoutWarningThreshold = 1001;
+    private DefaultSubscriptionView defaults = new DefaultSubscriptionView();
+    private List<SubscriptionDeliveryType> deliveryTypes =
+        Lists.newArrayList(
+            new SubscriptionDeliveryType("SERIAL", "SERIAL"),
+            new SubscriptionDeliveryType("BATCH", "BATCH"));
+
+    public Map<String, EndpointAddressResolverMetadata> getEndpointAddressResolverMetadata() {
+      return endpointAddressResolverMetadata;
+    }
+
+    public void setEndpointAddressResolverMetadata(
+        Map<String, EndpointAddressResolverMetadata> endpointAddressResolverMetadata) {
+      this.endpointAddressResolverMetadata = endpointAddressResolverMetadata;
+    }
+
+    public DefaultSubscriptionView getDefaults() {
+      return defaults;
+    }
+
+    public void setDefaults(DefaultSubscriptionView defaults) {
+      this.defaults = defaults;
+    }
+
+    public List<SubscriptionDeliveryType> getDeliveryTypes() {
+      return deliveryTypes;
+    }
+
+    public void setDeliveryTypes(List<SubscriptionDeliveryType> deliveryTypes) {
+      this.deliveryTypes = deliveryTypes;
+    }
+
+    public int getRequestTimeoutWarningThreshold() {
+      return requestTimeoutWarningThreshold;
+    }
+
+    public void setRequestTimeoutWarningThreshold(int requestTimeoutWarningThreshold) {
+      this.requestTimeoutWarningThreshold = requestTimeoutWarningThreshold;
+    }
+  }
+
+  /**
+   * Group view configuration for frontend console.
+   *
+   * <p><strong>WARNING:</strong> The {@code nonAdminCreationEnabled} property configured here is
+   * <strong>IGNORED</strong> and overridden at runtime by the value from {@link
+   * pl.allegro.tech.hermes.management.config.GroupProperties}.
+   *
+   * <p>The source of truth for this setting is: {@code group.nonAdminCreationEnabled} in your
+   * application configuration.
+   *
+   * @see pl.allegro.tech.hermes.management.config.GroupProperties
+   * @see
+   *     pl.allegro.tech.hermes.management.config.console.ConsoleConfiguration#consoleConfigurationRepository
+   */
+  public static final class GroupView {
+    private boolean nonAdminCreationEnabled = false;
+
+    public boolean isNonAdminCreationEnabled() {
+      return nonAdminCreationEnabled;
+    }
+
+    // No public setter - value is set directly in ConsoleConfiguration from GroupProperties
+    void setNonAdminCreationEnabled(boolean nonAdminCreationEnabled) {
+      this.nonAdminCreationEnabled = nonAdminCreationEnabled;
+    }
+  }
+
+  public static final class EndpointAddressResolverMetadata {
+    private String title;
+    private String type;
+    private String hint;
+
+    public String getTitle() {
+      return title;
+    }
+
+    public void setTitle(String title) {
+      this.title = title;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public void setType(String type) {
+      this.type = type;
+    }
+
+    public String getHint() {
+      return hint;
+    }
+
+    public void setHint(String hint) {
+      this.hint = hint;
+    }
+  }
+
+  public static final class DefaultSubscriptionView {
+    private SubscriptionPolicy subscriptionPolicy = new SubscriptionPolicy();
+    private String deliveryType = "SERIAL";
+
+    public SubscriptionPolicy getSubscriptionPolicy() {
+      return subscriptionPolicy;
+    }
+
+    public void setSubscriptionPolicy(SubscriptionPolicy subscriptionPolicy) {
+      this.subscriptionPolicy = subscriptionPolicy;
+    }
+
+    public String getDeliveryType() {
+      return deliveryType;
+    }
+
+    public void setDeliveryType(String deliveryType) {
+      this.deliveryType = deliveryType;
+    }
+  }
+
+  public static final class SubscriptionPolicy {
+    private int messageTtl = 3600;
+    private int requestTimeout = 1000;
+
+    public int getMessageTtl() {
+      return messageTtl;
+    }
+
+    public void setMessageTtl(int messageTtl) {
+      this.messageTtl = messageTtl;
+    }
+
+    public int getRequestTimeout() {
+      return requestTimeout;
+    }
+
+    public void setRequestTimeout(int requestTimeout) {
+      this.requestTimeout = requestTimeout;
+    }
+  }
+
+  public static final class SubscriptionDeliveryType {
+    private String value = "";
+    private String label = "";
+
+    public SubscriptionDeliveryType() {}
+
+    public SubscriptionDeliveryType(String value, String label) {
+      this.value = value;
+      this.label = label;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+
+    public String getLabel() {
+      return label;
+    }
+
+    public void setLabel(String label) {
+      this.label = label;
+    }
+  }
+
+  public static final class ConsistencyView {
+    private int maxGroupBatchSize = 10;
+
+    public int getMaxGroupBatchSize() {
+      return maxGroupBatchSize;
+    }
+
+    public void setMaxGroupBatchSize(int maxGroupBatchSize) {
+      this.maxGroupBatchSize = maxGroupBatchSize;
+    }
+  }
+
+  public static final class Costs {
+    private boolean enabled = false;
+    private String globalDetailsUrl = "";
+    private String topicIframeUrl = "";
+    private String topicDetailsUrl = "";
+    private String subscriptionIframeUrl = "";
+    private String subscriptionDetailsUrl = "";
+
+    public boolean isEnabled() {
+      return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+    }
+
+    public String getTopicIframeUrl() {
+      return topicIframeUrl;
+    }
+
+    public void setTopicIframeUrl(String topicIframeUrl) {
+      this.topicIframeUrl = topicIframeUrl;
+    }
+
+    public String getGlobalDetailsUrl() {
+      return globalDetailsUrl;
+    }
+
+    public void setGlobalDetailsUrl(String globalDetailsUrl) {
+      this.globalDetailsUrl = globalDetailsUrl;
+    }
+
+    public String getTopicDetailsUrl() {
+      return topicDetailsUrl;
+    }
+
+    public void setTopicDetailsUrl(String topicDetailsUrl) {
+      this.topicDetailsUrl = topicDetailsUrl;
+    }
+
+    public String getSubscriptionIframeUrl() {
+      return subscriptionIframeUrl;
+    }
+
+    public void setSubscriptionIframeUrl(String subscriptionIframeUrl) {
+      this.subscriptionIframeUrl = subscriptionIframeUrl;
+    }
+
+    public String getSubscriptionDetailsUrl() {
+      return subscriptionDetailsUrl;
+    }
+
+    public void setSubscriptionDetailsUrl(String subscriptionDetailsUrl) {
+      this.subscriptionDetailsUrl = subscriptionDetailsUrl;
+    }
+  }
+
+  public static final class OfflineRetransmission {
+    private boolean enabled = false;
+    private String description = "Offline retransmission";
+    private String fromViewDocsUrl = "https://hermes-pubsub.rtfd.org";
+    private String globalTaskQueueUrl = "http://localhost:8090/offline-retransmission/tasks";
+    private String monitoringDocsUrl = "https://hermes-pubsub.rtfd.org";
+
+    public boolean isEnabled() {
+      return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public void setDescription(String description) {
+      this.description = description;
+    }
+
+    public String getFromViewDocsUrl() {
+      return fromViewDocsUrl;
+    }
+
+    public void setFromViewDocsUrl(String fromViewDocsUrl) {
+      this.fromViewDocsUrl = fromViewDocsUrl;
+    }
+
+    public String getGlobalTaskQueueUrl() {
+      return globalTaskQueueUrl;
+    }
+
+    public void setGlobalTaskQueueUrl(String globalTaskQueueUrl) {
+      this.globalTaskQueueUrl = globalTaskQueueUrl;
+    }
+
+    public String getMonitoringDocsUrl() {
+      return monitoringDocsUrl;
+    }
+
+    public void setMonitoringDocsUrl(String monitoringDocsUrl) {
+      this.monitoringDocsUrl = monitoringDocsUrl;
+    }
+  }
+}
